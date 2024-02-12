@@ -11,7 +11,7 @@ import (
 type Todo struct {
     Id  int
     Description string
-    TargetDate time.Time
+    CreateTime time.Time
     IsDone bool
 }
 
@@ -44,26 +44,11 @@ func main() {
         // printItems(globalList)
     } else {
 
-    fmt.Println("next")
-
-
-    // globalList = append(globalList, Todo{
-    //     Id: 1,
-    //     Description: "Learn AWS",
-    //     TargetDate: time.Now().AddDate(0,0,4),
-    //     IsDone: false,
-    // })
-    // globalList = append(globalList, Todo{
-    //     Id: 2,
-    //     Description: "Learn Haskel",
-    //     TargetDate: time.Now().AddDate(0,0,9),
-    //     IsDone: false,
-    // })
-
+        fmt.Println("next")
         items := []Todo{
-            {Id: 1, Description: "Learn Lua", TargetDate: time.Now().AddDate(0,0,1), IsDone: false},
-            {Id: 2, Description: "Learn Low Level Language", TargetDate: time.Now().AddDate(0,2,9), IsDone: false},
-            {Id: 3, Description: "Learn Something new", TargetDate: time.Now().AddDate(3,1,1), IsDone: false},
+            {Id: 1, Description: "Learn Lua", CreateTime: time.Now(), IsDone: false},
+            {Id: 2, Description: "Learn Low Level Language", CreateTime: time.Now(), IsDone: false},
+            {Id: 3, Description: "Learn Something new", CreateTime: time.Now(), IsDone: false},
         }
 
         jsonData, err := json.Marshal(items)
@@ -133,7 +118,7 @@ func addNotes() {
     globalList = append(globalList, Todo{
         Id: 2,
         Description: "Learn Haskel",
-        TargetDate: time.Now().AddDate(0,0,9),
+        CreateTime: time.Now(),
         IsDone: false,
     })
     listTodos()
@@ -180,8 +165,14 @@ func deleteTodo(items *[]Todo, idx int) {
 func listTodos() {
     fmt.Println("view called")
 
+    customLayout := "2006-01-02 15:04:05"
+
+    fmt.Println("TODO LIST")
+    fmt.Println("----------------------------------------------------------------")
+    fmt.Printf("%-5s | %-30s | %-20s | %-10s\n" , "ID", "Task", "Created", "Status")
+    fmt.Println("----------------------------------------------------------------")
     for _, todo := range globalList {
-        fmt.Println(todo)
+            fmt.Printf("%-5d | %-30s | %-20s | %-10t\n", todo.Id, todo.Description, todo.CreateTime.Format(customLayout), todo.IsDone)
     }
 }
 
