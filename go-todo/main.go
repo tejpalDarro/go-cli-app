@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 ) 
 
@@ -79,7 +80,13 @@ func main() {
     if len(args) > 0 {
         switch args[0] {
         case "add":
-            addNotes() 
+            if (len(args) > 2) {
+                addNotes(args) 
+            } else {
+                fmt.Println("no description provided")
+                return 
+            }
+
         case "update":
             updateTodo()
         case "rm":
@@ -106,23 +113,67 @@ func main() {
 
 }
 
-func addNotes() {
-    fmt.Println("Add called")
-
-    // list := Todo {
-    //     Id: len(globalList) + 1,
-    //     Description: "Learn Something new",
-    //     TargetDate: time.Now().AddDate(0,9,1),
-    //     IsDone: false,
-    // }
-    globalList = append(globalList, Todo{
-        Id: 2,
-        Description: "Learn Haskel",
+func addNotes(argument []string) {
+    result := strings.Join(argument[1:], " ")
+    fmt.Print(result)
+    newTodo := Todo{
+        Id: len(globalList) + 1,
+        Description: result,
         CreateTime: time.Now(),
         IsDone: false,
-    })
-    listTodos()
-    // globalList = append(globalList, list) 
+    }
+
+    existingTodos, err := readTodosFromFile("items.json")
+    if err != nil {
+            fmt.Println("Error reading existing TODO items:", err)
+            return
+    }
+
+    // Append the new TODO object to the existing TODO list
+    existingTodos = append(existingTodos, newTodo)
+
+    // Write the updated TODO list back to "items.json" file
+    err = writeTodosToFile("items.json", existingTodos)
+    if err != nil {
+            fmt.Println("Error writing TODO items to file:", err)
+            return
+    }
+
+    fmt.Println("New TODO item added successfully.")
+
+    // listTodos()
+}
+func writeTodosToFile(filename string, todos []Todo) error {
+	// Marshal TODO items into JSON format
+	data, err := json.MarshalIndent(todos, "", "    ")
+	if err != nil {
+		return err
+	}
+
+	// Write JSON data to file
+	err = os.WriteFile(filename, data, 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func readTodosFromFile(filename string) ([]Todo, error) {
+	var todos []Todo
+
+	// Read file contents
+	data, err := os.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	// Unmarshal JSON data into slice of Todo
+	err = json.Unmarshal(data, &todos)
+	if err != nil {
+		return nil, err
+	}
+
+	return todos, nil
 }
 func updateTodo() {
     fmt.Println("update called")
@@ -168,9 +219,9 @@ func listTodos() {
     customLayout := "2006-01-02 15:04:05"
 
     fmt.Println("TODO LIST")
-    fmt.Println("----------------------------------------------------------------")
+    fmt.Println("------------------------------------------------------------------------")
     fmt.Printf("%-5s | %-30s | %-20s | %-10s\n" , "ID", "Task", "Created", "Status")
-    fmt.Println("----------------------------------------------------------------")
+    fmt.Println("------------------------------------------------------------------------")
     for _, todo := range globalList {
             fmt.Printf("%-5d | %-30s | %-20s | %-10t\n", todo.Id, todo.Description, todo.CreateTime.Format(customLayout), todo.IsDone)
     }
