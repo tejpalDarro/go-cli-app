@@ -3,7 +3,7 @@
         "Id": 2,
         "Description": "Learn Low Level Language",
         "CreateTime": "2024-02-12T20:08:37.996096874+05:30",
-        "IsDone": false
+        "IsDone": true
     },
     {
         "Id": 3,
@@ -21,6 +21,6 @@
         "Id": 4,
         "Description": "make a chess game in java",
         "CreateTime": "2024-02-12T20:53:51.570147188+05:30",
-        "IsDone": false
+        "IsDone": true
     }
 ]

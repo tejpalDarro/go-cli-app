@@ -104,6 +104,17 @@ func main() {
             }
         case "ls":
             listTodos()
+        case "--help":
+            Thelp()
+        case "--version":
+            Tversion()
+        case "done":
+            if (len(args) > 1) {
+                Tdone(args) 
+            } else {
+                fmt.Println("provide id to mark complete")
+                return 
+            }
         default:
             fmt.Println("type help for alias")
         }
@@ -111,6 +122,49 @@ func main() {
         fmt.Println("no args called!")
     }
 
+}
+
+func Tdone(arg []string) {
+    flag := false
+    existingTodos, err := readTodosFromFile("items.json")   
+    if err != nil {
+        fmt.Println("Error reading existing TODO items:", err)
+    }
+
+    num, err := strconv.Atoi(arg[1])
+    if err != nil {
+        fmt.Println("Err converting string to int:",  err)
+        return
+    }
+
+    for i:= range existingTodos {
+        if (num == existingTodos[i].Id) {
+            fmt.Println(existingTodos[i].IsDone)
+            existingTodos[i].IsDone = true 
+            flag = true
+        } 
+    }
+
+    if flag {
+        err = writeTodosToFile("items.json", existingTodos)
+        if err != nil {
+                fmt.Println("Error writing TODO items to file:", err)
+                return
+        }
+        fmt.Println("updated complete")
+        
+    } else {
+        fmt.Println("No matching id found")
+    }
+
+}
+
+func Tversion() {
+    fmt.Println("Kodu version: 0.5.1")
+}
+
+func Thelp() {
+   fmt.Println("alias for Kodu \nadd \nupdate \nrm \nls") 
 }
 
 func addNotes(argument []string) {
@@ -140,8 +194,6 @@ func addNotes(argument []string) {
     }
 
     fmt.Println("New TODO item added successfully.")
-
-    // listTodos()
 }
 func writeTodosToFile(filename string, todos []Todo) error {
 	// Marshal TODO items into JSON format
