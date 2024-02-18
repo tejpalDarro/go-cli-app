@@ -1,0 +1,3 @@
+# Ignore build directories
+/go-urfave-cli/
+/go-mongo-test/

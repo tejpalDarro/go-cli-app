@@ -116,10 +116,10 @@ func main() {
                 return 
             }
         default:
-            fmt.Println("type help for alias")
+            fmt.Println("--help for args")
         }
     } else {
-        fmt.Println("no args called!")
+        fmt.Println("--help for args")
     }
 
 }
@@ -160,11 +160,11 @@ func Tdone(arg []string) {
 }
 
 func Tversion() {
-    fmt.Println("Kodu version: 0.5.1")
+    fmt.Println("Kodu version: 0.5")
 }
 
 func Thelp() {
-   fmt.Println("alias for Kodu \nadd \nupdate \nrm \nls") 
+   fmt.Println("alias for Kodu \nadd <space>[desc for todo] \nupdate <space>[id_number] <space>[new_desc_for_todo] \nrm <space>[id_number] \nls") 
 }
 
 func addNotes(argument []string) {
